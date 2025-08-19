@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration | BUILD THE FUTURE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">BUILD THE FUTURE</a>
+            <ul>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#details">Details</a></li>
+                <li><a href="details.html">Get Details</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="registration-page">
+        <section class="registration-flow">
+            <h2>Registration Portal</h2>
+
+            <div id="choice-section">
+                <p>Please select your registration type to begin.</p>
+                <div class="choice-container">
+                    <button id="btn-old-participant" class="choice-button">I am an Old Participant</button>
+                    <button id="btn-new-participant" class="choice-button">I am a New Participant</button>
+                </div>
+            </div>
+
+            <div id="verify-section" class="hidden">
+                <h3>Step 1: Enter Your Previous ID</h3>
+                <p>Please enter your Participant ID from the first round to link your registration.</p>
+                <form id="verify-form" class="inline-form">
+                    <div class="form-group">
+                        <label for="old-participant-id" class="sr-only">Participant ID</label>
+                        <input type="text" id="old-participant-id" placeholder="Enter your old Participant ID" required>
+                    </div>
+                    <button type="submit" class="cta-button">Confirm & Proceed to Pay</button>
+                </form>
+                <div id="verify-message" class="message-area"></div>
+            </div>
+
+            <div id="payment-section" class="hidden">
+                <h3 id="payment-step-title">Step 2: Complete Your Payment</h3>
+                <p>Click the button below to fill in your details and complete the payment of ₹200.</p>
+                <form id="razorpay-form">
+                    <script src="https://checkout.razorpay.com/v1/payment-button.js" 
+                            data-payment_button_id="pl_R7IeVvQto064El" 
+                            async>
+                    </script>
+                </form>
+            </div>
+            
+            <div id="status-message" class="status-box"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 BUILD THE FUTURE. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

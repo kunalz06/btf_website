@@ -1,0 +1,275 @@
+/* General Styling */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+    --primary-color: #2a9d8f;
+    --secondary-color: #e9c46a;
+    --background-color: #f4f1de;
+    --text-color: #264653;
+    --heading-font: 'Poppins', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--heading-font);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Header and Navigation */
+header {
+    background: #fff;
+    padding: 1rem 5%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    margin-left: 2rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: var(--primary-color);
+}
+
+.cta-button {
+    background-color: var(--primary-color);
+    color: #fff !important;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: var(--heading-font);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.cta-button:hover {
+    background-color: #217a70;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.timer h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+}
+
+#countdown {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+}
+
+/* General Sections */
+section {
+    padding: 4rem 10%;
+    text-align: center;
+}
+
+section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* Details Section */
+.details-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.detail-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    flex: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.detail-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.detail-card h3 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.detail-card p {
+    font-size: 1.1rem;
+}
+
+/* Registration & Details Page */
+.registration-page {
+    min-height: 80vh;
+}
+
+.registration-flow, #details-lookup-section {
+    background: #fff;
+    padding: 2rem 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Choice section styles */
+.choice-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.choice-button {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #fff;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.choice-button:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    transform: translateY(-5px);
+}
+
+/* Verification and Details form styles */
+.inline-form {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.inline-form .form-group {
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+
+.inline-form input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.inline-form button {
+    white-space: nowrap; /* Prevents button text from wrapping */
+}
+
+.sr-only { /* For accessibility, hides labels visually */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.message-area {
+    margin-top: 1rem;
+    font-weight: 600;
+    min-height: 24px;
+}
+.message-area.success {
+    color: var(--primary-color);
+}
+.message-area.error {
+    color: #d9534f;
+}
+
+/* Status Message Box */
+.status-box {
+    margin-top: 2rem;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background-color: #e0f2f1;
+    border-radius: 8px;
+    border-left: 5px solid var(--primary-color);
+}
+
+/* Footer */
+footer {
+    background-color: var(--text-color);
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem 5%;
+    margin-top: 2rem;
+}
