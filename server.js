@@ -80,7 +80,6 @@ app.post('/api/payment-webhook', express.raw({ type: 'application/json' }), asyn
 
                 // CONDITIONAL LOGIC: Check if this is an old participant
                 if (old_participant_id) {
-                    // --- This is an OLD participant, so UPDATE their record ---
                     const updatedParticipant = await Participant.findOneAndUpdate(
                         { participantId: old_participant_id },
                         {
@@ -91,9 +90,9 @@ app.post('/api/payment-webhook', express.raw({ type: 'application/json' }), asyn
                             orderId: paymentEntity.order_id,
                             razorpayPaymentId: paymentEntity.id,
                             paymentStatus: 'successful',
-                            registrationDate: new Date() // Update registration date
+                            registrationDate: new Date()
                         },
-                        { new: true } // Return the updated document
+                        { new: true }
                     );
                     if (updatedParticipant) {
                         console.log(`Successfully UPDATED participant: ${name} with ID: ${old_participant_id}`);
@@ -101,7 +100,7 @@ app.post('/api/payment-webhook', express.raw({ type: 'application/json' }), asyn
                         console.log(`Could not find participant with ID ${old_participant_id} to update.`);
                     }
                 } else {
-                    // --- This is a NEW participant, so CREATE a new record ---
+                    // This is a NEW participant, so CREATE a new record
                     const newParticipantId = await generateParticipantId();
                     const newParticipant = new Participant({
                         name,
@@ -181,8 +180,8 @@ app.post('/api/get-details', async (req, res) => {
     }
 });
 
-
 // --- Fallback to serve frontend files ---
+// This MUST be the last route defined.
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
