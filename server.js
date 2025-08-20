@@ -11,15 +11,10 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- Middleware ---
-app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json()); // Add JSON body parser for all API routes
-
 // --- MongoDB Connection ---
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Successfully connected to MongoDB Atlas!'))
-    .catch(err => console.error('MongoDB connection error:', err));
+    .then(() => console.log('✅ Successfully connected to MongoDB Atlas!'))
+    .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // --- Mongoose Schema for Participants ---
 const participantSchema = new mongoose.Schema({
@@ -51,7 +46,7 @@ async function generateParticipantId() {
     );
     let sequence = counter.sequence_value;
     if (sequence > 550) {
-        console.warn("Participant ID sequence has exceeded 550.");
+        console.warn("⚠️ Participant ID sequence has exceeded 550.");
     }
     const paddedSequence = sequence.toString().padStart(2, '0');
     const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -60,33 +55,30 @@ async function generateParticipantId() {
     return `WBKON56${paddedSequence}${randomChar}${randomNumber}`;
 }
 
-// --- API Endpoints ---
-
-// Webhook Handler for Razorpay
+// --- Razorpay Webhook Handler (must come BEFORE express.json) ---
 app.post('/api/payment-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     try {
         const shasum = crypto.createHmac('sha256', secret);
-        shasum.update(JSON.stringify(req.body));
+        shasum.update(req.body); // req.body is raw buffer here
         const digest = shasum.digest('hex');
 
         if (digest === req.headers['x-razorpay-signature']) {
-            const event = req.body.event;
-            const payload = req.body.payload;
+            const event = JSON.parse(req.body.toString()).event;
+            const payload = JSON.parse(req.body.toString()).payload;
 
             if (event === 'payment.captured') {
                 const paymentEntity = payload.payment.entity;
                 const { name, teamNumber, email, participantType, old_participant_id } = paymentEntity.notes;
 
-                // CONDITIONAL LOGIC: Check if this is an old participant
                 if (old_participant_id) {
                     const updatedParticipant = await Participant.findOneAndUpdate(
                         { participantId: old_participant_id },
                         {
-                            name: name,
+                            name,
                             teamNumber: Number(teamNumber),
-                            email: email,
-                            participantType: participantType,
+                            email,
+                            participantType,
                             orderId: paymentEntity.order_id,
                             razorpayPaymentId: paymentEntity.id,
                             paymentStatus: 'successful',
@@ -95,12 +87,11 @@ app.post('/api/payment-webhook', express.raw({ type: 'application/json' }), asyn
                         { new: true }
                     );
                     if (updatedParticipant) {
-                        console.log(`Successfully UPDATED participant: ${name} with ID: ${old_participant_id}`);
+                        console.log(`✅ UPDATED participant: ${name} with ID: ${old_participant_id}`);
                     } else {
-                        console.log(`Could not find participant with ID ${old_participant_id} to update.`);
+                        console.log(`⚠️ Could not find participant with ID ${old_participant_id} to update.`);
                     }
                 } else {
-                    // This is a NEW participant, so CREATE a new record
                     const newParticipantId = await generateParticipantId();
                     const newParticipant = new Participant({
                         name,
@@ -113,20 +104,25 @@ app.post('/api/payment-webhook', express.raw({ type: 'application/json' }), asyn
                         paymentStatus: 'successful'
                     });
                     await newParticipant.save();
-                    console.log(`Successfully CREATED participant: ${name} with ID: ${newParticipantId}`);
+                    console.log(`✅ CREATED participant: ${name} with ID: ${newParticipantId}`);
                 }
             }
         } else {
-            console.log('Webhook signature mismatch!');
+            console.log('❌ Webhook signature mismatch!');
         }
         res.json({ status: 'ok' });
     } catch (error) {
-        console.error("Webhook processing error:", error);
+        console.error("❌ Webhook processing error:", error);
         res.status(500).send("Webhook processing error.");
     }
 });
 
-// Status Check Endpoint for Frontend Polling
+// --- Middleware (after webhook) ---
+app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()); // JSON parsing for all other routes
+
+// --- Status Check Endpoint ---
 app.get('/api/registration-status', async (req, res) => {
     try {
         const { orderId } = req.query;
@@ -144,7 +140,7 @@ app.get('/api/registration-status', async (req, res) => {
     }
 });
 
-// Receipt Download Endpoint
+// --- Receipt Download Endpoint ---
 app.post('/api/get-details', async (req, res) => {
     try {
         const { participantId } = req.body;
@@ -175,18 +171,16 @@ app.post('/api/get-details', async (req, res) => {
         doc.fontSize(10).text('Thank you for participating!', { align: 'center' });
         doc.end();
     } catch (error) {
-        console.error('Server error:', error);
+        console.error('❌ Server error:', error);
         res.status(500).json({ message: 'An error occurred on the server.' });
     }
 });
 
-
 // --- Fallback to serve frontend files ---
-// This MUST be the last route defined.
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
