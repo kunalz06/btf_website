@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: build-the-future
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    autoDeploy: true
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
